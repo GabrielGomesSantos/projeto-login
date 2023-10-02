@@ -16,17 +16,17 @@ imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
 posicao_fundo = imagem_fundo.get_rect()
 
 cor_botao = (211, 211, 211)
-cor_botao_clique = (211, 211, 211)
+cor_botao_clique = (75, 0, 130)
 cor_texto = (0, 0, 0)
 
 largura_caixa_texto = 300
 altura_caixa_texto = 18
 
 # Variáveis para armazenar as entradas do usuário
-entrada_nome = ""
-entrada_user = ""
-entrada_password = ""
-entrada_confirme = ""
+entrada_nome = "Nome: "
+entrada_user = "User: "
+entrada_password = "Password: "
+entrada_confirme = "Confirme: "
 
 # Caixa de texto para o nome 
 posicao_caixa_texto_nome = pygame.Rect((largura // 2 - largura_caixa_texto // 2, altura // 2 - 82, largura_caixa_texto, altura_caixa_texto))
@@ -45,14 +45,6 @@ editando_caixa_texto_user = False
 editando_caixa_texto_password = False
 editando_caixa_texto_nome = False
 editando_caixa_texto_confirme = False
-
-# Defina as dimensões e a posição do botão "Cadastrar"
-largura_botao = 100
-altura_botao = 25
-posicao_botao_cadastrar = pygame.Rect((largura // 2 - largura_botao // 2, posicao_caixa_texto_confirme.bottom + 20, largura_botao, altura_botao))
-
-# Variável para controlar o estado do botão "Cadastrar"
-botao_cadastrar_clicado = False
 
 while True:
     for evento in pygame.event.get():
@@ -88,37 +80,6 @@ while True:
             else:
                 editando_caixa_texto_confirme = False
 
-            if posicao_botao_cadastrar.collidepoint(evento.pos):
-                botao_cadastrar_clicado = True
-                print("Botão Cadastrar foi clicado")
-            else:
-                botao_cadastrar_clicado = False
-
-        if evento.type == pygame.KEYDOWN:
-            if editando_caixa_texto_user:
-                if evento.key == pygame.K_BACKSPACE:
-                    entrada_user = entrada_user[:-1]
-                else:
-                    entrada_user += evento.unicode
-
-            if editando_caixa_texto_password:
-                if evento.key == pygame.K_BACKSPACE:
-                    entrada_password = entrada_password[:-1]
-                else:
-                    entrada_password += evento.unicode
-
-            if editando_caixa_texto_nome:
-                if evento.key == pygame.K_BACKSPACE:
-                    entrada_nome = entrada_nome[:-1]
-                else:
-                    entrada_nome += evento.unicode
-
-            if editando_caixa_texto_confirme:
-                if evento.key == pygame.K_BACKSPACE:
-                    entrada_confirme = entrada_confirme[:-1]
-                else:
-                    entrada_confirme += evento.unicode
-
     if not editando_caixa_texto_user and entrada_user == "":
         entrada_user = "User: "
 
@@ -150,17 +111,7 @@ while True:
     texto_surface_confirme = fonte.render(entrada_confirme, True, cor_texto)
     tela.blit(texto_surface_confirme, (posicao_caixa_texto_confirme.x+7, posicao_caixa_texto_confirme.y))
 
-    pygame.draw.rect(tela, cor_botao if not botao_cadastrar_clicado else cor_botao_clique, posicao_botao_cadastrar, 0, 100)
-    fonte_botao = pygame.font.Font(None, 22)
-    texto_botao_cadastrar = fonte_botao.render("Cadastrar", True, (0, 0, 0))
-    tela.blit(texto_botao_cadastrar, (posicao_botao_cadastrar.x+13, posicao_botao_cadastrar.y+7))
-
     gerenciador_ui.update(0.01)
     gerenciador_ui.draw_ui(tela)
 
     pygame.display.update()
-
-
-# Armazenar os dados do usuário em uma variável
-# Adicionar o botão de sair ao canto superior 
-# Mudar o fundo
