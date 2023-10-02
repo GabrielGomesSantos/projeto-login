@@ -1,7 +1,6 @@
 import pygame
 import sys
 import json 
-import getpass
 
 #=-=-=PARTE DE CADASTRO=-=-=
 def cadastro():
@@ -247,7 +246,9 @@ def tela_login():
                 if ativo_input1:
                     if evento.key == pygame.K_RETURN:
                         print("Texto da Caixa 1:", User)
+                        # Salve o texto inserido na variável correspondente
                         texto_caixa1 = User
+                        # Limpe a entrada de texto
                         User = ""
                     elif evento.key == pygame.K_BACKSPACE:
                         User = User[:-1]
@@ -255,10 +256,10 @@ def tela_login():
                         User += evento.unicode
                 elif ativo_input2:
                     if evento.key == pygame.K_RETURN:
-                        # Use getpass para obter a senha de forma segura
-                        Pass = getpass.getpass("Senha: ")
-                        print("Senha digitada")
+                        print("Texto da Caixa 2:", Pass)
+                        # Salve o texto inserido na variável correspondente
                         texto_caixa2 = Pass
+                        # Limpe a entrada de texto
                         Pass = ""
                     elif evento.key == pygame.K_BACKSPACE:
                         Pass = Pass[:-1]
