@@ -36,7 +36,7 @@ def cadastro():
     #=-=-=PARTE DE VERIFICACAO DE LOGIN=-=-=
 
 def carregar_json():
-    with open('Arquivos.json/cadastro.json', 'r', encoding='utf-8') as usuario:
+    with open('json/cadastro.json', 'r', encoding='utf-8') as usuario:
         dados = json.load(usuario)
 
     return(dados)
