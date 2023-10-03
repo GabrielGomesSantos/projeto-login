@@ -208,6 +208,7 @@ def tela_login():
     fonte_senha = pygame.font.Font("arial.ttf", 25)
     User = ""
     Pass = ""
+    mostrar_senha= pygame.Rect(350, 300, 30, 25)
     cor_input_ativo = pygame.Color(168, 168, 255)
     cor_input_inativo = pygame.Color('white')
     cor_input1 = cor_input_inativo
@@ -232,10 +233,8 @@ def tela_login():
     fonte_botao_entrar = pygame.font.Font(None, 15)
     texto_botao_entrar = fonte_botao_entrar.render("E N T R A R", True, (255, 255, 255))  # Texto branco
 
-    largura_botao_voltar = 150
-    altura_botao_voltar = 25
-    posicao_botao_voltar = pygame.Rect((250 - largura_botao_voltar // 2, 300, largura_botao_voltar, altura_botao_voltar))
-    mostrar_senha= pygame.Rect(350, 300, 30, 25)
+
+    mostrar_senha= pygame.Rect(360, 300, 30, 25)
 
     #Variavel que regula a quantidade de caracteres
 
@@ -248,7 +247,11 @@ def tela_login():
                 executando_tela = False
                 break
             if evento.type == pygame.MOUSEBUTTONDOWN:
-                if input_caixa1.collidepoint(evento.pos):
+                if mostrar_senha.collidepoint(evento.pos):
+                    
+                    mostrar_senha_ativo = not mostrar_senha_ativo
+
+                elif input_caixa1.collidepoint(evento.pos):
                     ativo_input1 = not ativo_input1
                     ativo_input2 = False
                 elif input_caixa2.collidepoint(evento.pos):
@@ -272,8 +275,9 @@ def tela_login():
                         # Limpe a entrada de texto
                     elif evento.key == pygame.K_BACKSPACE:
                         User = User[:-1]
-                    else:
+                    elif len(User) < maximo_user:
                         User += evento.unicode
+                    
                 elif ativo_input2:
                     if evento.key == pygame.K_RETURN:
                         print("Texto da Caixa 2:", Pass)
@@ -287,8 +291,7 @@ def tela_login():
                         Pass = Pass[:-1]
                     elif len(Pass) < maximo_senha:
                         Pass += evento.unicode
-                    else:
-                        Pass += evento.unicode
+                    
 
         tela.blit(imagem_fundo, posicao_fundo)
 
@@ -302,10 +305,13 @@ def tela_login():
         #Faz a senha ficar em mascara "*"
         if not mostrar_senha_ativo:
             texto_mascarado = "*" * len(Pass)
+            texto_surface2 = fonte_senha.render(texto_mascarado, True, (47, 47, 51))
+            
 
         # Renderize o texto inserido nas caixas de entrada
         texto_surface1 = fonte_input.render(User, True, (47, 47, 51))
-        texto_surface2 = fonte_input.render(Pass, True, (47, 47, 51))
+        if mostrar_senha_ativo:
+            texto_surface2 = fonte_input.render(Pass, True, (47, 47, 51))
 
         # Centralize verticalmente o texto nas caixas de entrada
         text_rect1 = texto_surface1.get_rect()
