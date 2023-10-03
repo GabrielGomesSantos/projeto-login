@@ -4,20 +4,20 @@ import json
 import pygame_gui
     
 # =-=-=-=-=-=-=-=-=-=-=-=-PARTE DE CADASTRO =-=-=-=-=-=-=-=-=-=-=-=-
-def cadastro():
+def cadastro(nome, user, password):
     # Variáveis
     dados2 = []
-    cadastro_user = input("User:")
-    user = verificar_Usuario() 
+    cadastro_user = user
+    users = verificar_Usuario() 
     cadastroflag = True
     
-    for item in user:
+    for item in users:
         if item == cadastro_user:
             cadastroflag = False
             break
         
     if cadastroflag:
-        cadastro_password = input("Password:")
+        cadastro_password = password
     
         novo_usuario = {
             "username": cadastro_user,
@@ -29,7 +29,7 @@ def cadastro():
         
         dados_json = {"dados": dados1["dados"]}
             
-        with open('Arquivos.json/cadastro.json', 'w') as cadastro:
+        with open('json/cadastro.json', 'w') as cadastro:
             json.dump(dados_json, cadastro, indent=4)
             
         print(f"Usuário {cadastro_user} cadastrado com sucesso!!")
@@ -540,7 +540,7 @@ def tela_cadastro():
                     password = entrada_password
                     confirme = entrada_confirme
                     if (password == confirme):
-                        cadastro(nome, user, password, confirme)
+                        cadastro(nome, user, password)
                         print(nome)
                         print(user)
                         print(password)
