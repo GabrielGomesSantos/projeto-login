@@ -119,7 +119,7 @@ def tela_main():
     largura = 1920
     altura = 1080
 
-    imagem_fundo = pygame.image.load("Img/Ex. Notion.png")
+    imagem_fundo = pygame.image.load("Img/mainbg.png")
     imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
     posicao_fundo = imagem_fundo.get_rect()
 
@@ -190,7 +190,7 @@ def tela_login():
     largura = 500
     altura = 500
 
-    imagem_fundo = pygame.image.load("Img/img_painel2.png")
+    imagem_fundo = pygame.image.load("Img/img_painel_black.png")
     imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
     posicao_fundo = imagem_fundo.get_rect()
 
@@ -341,7 +341,7 @@ def tela_inicial():
     largura = 500
     altura = 500
 
-    imagem_fundo = pygame.image.load("Img/Img_painel2.png")
+    imagem_fundo = pygame.image.load("Img/Img_painel_black.png")
     imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
     posicao_fundo = imagem_fundo.get_rect()
 
