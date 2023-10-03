@@ -1,0 +1,39 @@
+{
+    "usuarios": [
+        {
+            "id": 1,
+            "nome": "Izaque",
+            "tarefas": [
+                {
+                    "id": 1,
+                    "titulo": "titulo", 
+                    "descricao": "Dar 100 Pontos para esse trabalho",
+                    "concluida": false
+                },
+                {
+                    "id": 2,
+                    "titulo": "titulo", 
+                    "descricao": "Corigir esse trabalho",
+                    "concluida": true
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "nome": "Usuario2",
+            "tarefas": [
+                {
+                    "id": 1,	
+                    "titulo": "titulo", 
+                    "descricao": "Tarefa 1", 
+                    "concluida": false
+                    },
+                    {"id": 2,
+                    "titulo": "titulo", 
+                    "descricao": "Tarefa 2", 
+                    "concluida": true
+                    }
+            ]
+        }
+    ]
+}
