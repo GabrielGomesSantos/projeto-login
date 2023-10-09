@@ -23,7 +23,7 @@ def cadastro(nome, user, password):
             "username": cadastro_user,
             "pass": cadastro_password
         }
-        dados1 = carregar_json()
+        dados1 = carregar_cadastro_json()
 
         dados1["dados"].append(novo_usuario)
         
@@ -38,7 +38,7 @@ def cadastro(nome, user, password):
 
     #=-=-=PARTE DE VERIFICACAO DE LOGIN=-=-=
 
-def carregar_json():
+def carregar_cadastro_json():
     with open('json/cadastro.json', 'r', encoding='utf-8') as usuario:
         dados = json.load(usuario)
 
@@ -46,7 +46,7 @@ def carregar_json():
 
 def verificar_Usuario():
     
-    dados = carregar_json()
+    dados = carregar_cadastro_json()
     nomes_de_usuario = []
     
     for item in dados['dados']:
@@ -55,7 +55,7 @@ def verificar_Usuario():
 
 def verificar_senha():
     
-    dados = carregar_json()
+    dados = carregar_cadastro_json()
     senhas = []
     
     for item in dados['dados']:

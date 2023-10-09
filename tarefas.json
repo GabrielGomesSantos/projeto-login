@@ -6,27 +6,15 @@
             "tarefas": [
                 {
                     "id": 1,
-                    "titulo": "Nota",
+                    "titulo": "Nota", 
                     "descricao": "Dar 100 Pontos para esse trabalho",
                     "concluida": false
                 },
                 {
                     "id": 2,
-                    "titulo": "titulo",
+                    "titulo": "titulo", 
                     "descricao": "Corigir esse trabalho",
                     "concluida": true
-                },
-                {
-                    "id": 3,
-                    "titulo": "Izaque",
-                    "descricao": "Me de 100 pontos nesse trabalho",
-                    "concluida": false
-                },
-                {
-                    "id": 4,
-                    "titulo": "testeee",
-                    "descricao": "ola q tal",
-                    "concluida": false
                 }
             ]
         },
@@ -35,15 +23,15 @@
             "nome": "Usuario2",
             "tarefas": [
                 {
-                    "id": 1,
-                    "titulo": "titulo",
-                    "descricao": "Tarefa 1",
+                    "id": 1,	
+                    "titulo": "titulo", 
+                    "descricao": "Tarefa 1", 
                     "concluida": false
                 },
                 {
                     "id": 2,
-                    "titulo": "titulo",
-                    "descricao": "Tarefa 2",
+                    "titulo": "titulo", 
+                    "descricao": "Tarefa 2", 
                     "concluida": true
                 }
             ]
