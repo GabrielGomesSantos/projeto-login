@@ -1,28 +1,35 @@
-import json
+import pygame
 
-try:
-    with open('json/tarefas.json', 'r') as file:
-        data = json.load(file)
-except FileNotFoundError:
-    data = {"usuarios": []}
+# Inicialize o Pygame
+pygame.init()
 
+# Configurações da primeira janela
+window1 = pygame.display.set_mode((400, 300))
+pygame.display.set_caption("Janela 1")
 
-# Suponhamos que você deseja adicionar uma tarefa para o usuário com ID 1
-user_id = 1
+# Variável para controlar a exibição da segunda janela
+show_second_window = False
 
-# Crie uma nova tarefa
-nova_tarefa = {
-    "id": len(data["usuarios"][user_id - 1]["tarefas"]) + 1,  # Gere um novo ID
-    "titulo": "Nova Tarefa",
-    "descricao": "Esta é uma nova tarefa",
-    "concluida": False
-}
-# Adicione a nova tarefa à lista de tarefas do usuário
-data["usuarios"][user_id - 1]["tarefas"].append(nova_tarefa)
+# Loop principal
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Botão esquerdo do mouse
+            if not show_second_window:
+                show_second_window = True
 
+    # Desenhe coisas na primeira janela
+    window1.fill((255, 0, 0))  # Preencha a primeira janela com vermelho
 
-# Salve as alterações de volta no arquivo JSON
-with open('json/tarefas1.json', 'w', encoding='utf-8') as file:
-    json.dump(data, file, indent=4, ensure_ascii=False)
+    if show_second_window:
+        # Configurações da segunda janela (simulada)
+        window2 = pygame.display.set_mode((400, 300))
+        pygame.display.set_caption("Janela 2")
+        window2.fill((0, 0, 255))  # Preencha a segunda janela com azul
 
-print(data)
+    pygame.display.flip()
+
+# Encerre o Pygame
+pygame.quit()

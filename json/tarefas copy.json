@@ -3,6 +3,7 @@
         {
             "id": 1,
             "nome": "Izaque",
+            "user": "Izaque",
             "tarefas": [
                 {
                     "id": 1,
@@ -21,6 +22,7 @@
         {
             "id": 2,
             "nome": "Usuario2",
+            "user": "teste",
             "tarefas": [
                 {
                     "id": 1,	
