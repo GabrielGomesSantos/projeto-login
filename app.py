@@ -5,9 +5,12 @@ import json
 from time import sleep
 import os
 
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-JSON-CADASTRO=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
- 
-global usuario_logado 
+
+# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-JSON-CADASTRO=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+global posicao_do_usuario_logado
+global nome_usuario
+
 def cadastro(nome, user, password):
     # Variáveis
     dados2 = []
@@ -72,9 +75,9 @@ def cadastro(nome, user, password):
         print(f"Nome: {nome}")
         print(f"User: {user}")
         print(f"Password: {password}")
-        print(f"Usuário {cadastro_user} cadastrado com sucesso!!")
+        print(f"Usuário {cadastro_user} cadastrado com sucesso!!") #Implementar 03: Rotulo para mostrar que o usuario foi cadastrado com sucesso !!!
     else:
-        print("Usuário já cadastrado")
+        print("Usuário já cadastrado") #Implementar 04: Rotulo para mostrar que o usuario ja foi cadastrado!!!
 
     #=-=-=PARTE DE VERIFICACAO DE LOGIN=-=-=
     
@@ -112,8 +115,10 @@ def verificar_login(User, Pass ):
     pas = verificar_senha()
     user_digitado = User
     pass_digitado = Pass
-    global usuario_logado  # Adicione essa linha
-    usuario_logado = None  # Inicialize a variável
+    global posicao_do_usuario_logado # Adicione essa linha
+    global nome_usuario
+    nome_usuario = None
+    posicao_do_usuario_logado = None  # Inicialize a variável
     #Verificacao de usuario
     
     for item in user:
@@ -121,8 +126,8 @@ def verificar_login(User, Pass ):
         if item == user_digitado:
             usuario = True
             pos = user.index(item) #pegar posicao do vetor apartir do valor dele
-            usuario_logado = pos+1 
-            print(usuario_logado)
+            nome_usuario = item
+            posicao_do_usuario_logado= pos+1 
             break
         
         else:
@@ -137,24 +142,27 @@ def verificar_login(User, Pass ):
             senha = False   
     
     if usuario and senha:
-        print(f"Bem Vindo {item}!!!")
+        print(f"Bem Vindo {item}!!!") 
         tela_main()
           
     else:
-        print("Usuario ou senha invalidos!!")
+        print("Usuario ou senha invalidos!!") #Implementar 05: Rotulo para mostrar que o usuario ou senha estao errados!!!
         tela_login()
        
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-JSON-TAREFAS=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-def carregar_Tarefas_json():#Carrega o nosso documento "json/tarefas.json" e salvo seus dados em uma variavels usuarios.
+def carregar_Tarefas_json():#  Carrega o nosso documento "json/tarefas.json" e salvo seus dados em uma variavels usuarios.
     with open("json/tarefas.json", 'r', encoding='utf-8') as usuario:
         dados = json.load(usuario)
         usuarios = dados['usuarios']
         
     return(usuarios)
 
-def verificar_tarefas(): #Verifica as tarefas do usuario 
-    nome_usuario = "Izaque"
+def verificar_tarefas(): #  Verifica as tarefas do usuario 
+    
+    global posicao_do_usuario_logado # Adicione essa linha
+    global nome_usuario
+    
     dados = carregar_Tarefas_json()
 
     for item in dados:
@@ -186,28 +194,48 @@ def pesquisar_tarefa(busca):
     for tarefa in tarefas_list:
         if tarefa['titulo'] == write_title:
             sleep(0.5)
-            print(f"\nTarefa encontrada")
+            print(f"\nTarefa encontrada") #Implementar 02: Rotulo para mostrar que a tarefa foi encontrada !!!
             print(f"---------------------------\nTitulo: {tarefa['titulo']}\n\nDescrição: {tarefa['descricao']}")
             found = True  # Marque como encontrada
             break
 
     if not found:
+
+        #Implementar 01: Rotulo para mostrar que a tarefa nao foi encontrada !!!
         print("Não foi possível encontrar a tarefa com esse nome")
   
 def criar_tarefa(new_titulo, nota_add): #Criar uma tarefa nova
-    
+
+    user_id = posicao_do_usuario_logado
+    new_title = new_titulo
+    new_txt = nota_add
+    titulos = []
+    flagtitulos = True
+
     try:
         with open("json/tarefas.json", 'r') as file:
             data = json.load(file)
     except FileNotFoundError:
         data = {"usuarios": []}
 
-    new_title = new_titulo
-    new_txt = nota_add
+    
+    #=-=-=-=-=-=-=Verificar-se-tem-titulos-iguais=-=-=-=-=-=-=-=-=
 
-    # Suponhamos que você deseja adicionar uma tarefa para o usuário com ID 1
-    user_id = usuario_logado
+    tarefas = verificar_tarefas()  
 
+    for tarefa in tarefas:
+        titulos.append(tarefa["titulo"])
+
+    for item in titulos:
+        if item == new_title:
+            flagtitulos = False
+
+    if flagtitulos:
+        print("continua...")
+    if  not flagtitulos:
+        print("Titulo ja existe!!!")
+
+        
     # Crie uma nova tarefa
     nova_tarefa = {
         "id": len(data["usuarios"][user_id - 1]["tarefas"]) + 1,  # Gere um novo ID
@@ -215,6 +243,7 @@ def criar_tarefa(new_titulo, nota_add): #Criar uma tarefa nova
         "descricao": new_txt,
         "concluida": False
     }
+
     # Adicione a nova tarefa à lista de tarefas do usuário
     data["usuarios"][user_id - 1]["tarefas"].append(nova_tarefa)
 
@@ -222,8 +251,10 @@ def criar_tarefa(new_titulo, nota_add): #Criar uma tarefa nova
     # Salve as alterações de volta no arquivo JSON
     with open("json/tarefas.json", 'w', encoding='utf-8') as file:
         json.dump(data, file, indent=4, ensure_ascii=False)
+    
 
-# =-=-=-=-=-=-=-=-=-=-=-=-INTERFACE =-=-=-=-=-=-=-=-=-=-=-=-
+    #Implementar 06: Rotulo para mostrar que a tarefa foi computada com sucesso!!!
+# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-INTERFACE==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 def abrir_titulo():
     pygame.quit()
@@ -409,7 +440,6 @@ def abrir_nota_add(titulo):
             y += altura_texto
         pygame.display.update()
     
-
 def abrir_tela_e_fechar():
     pygame.quit()  # Fecha a tela atual
     tela_inicial()  # Abre a tela inicial
@@ -512,7 +542,6 @@ def tela_main():
         tela.blit(imagem_fundo, posicao_fundo)
     pygame.quit()
     
-
 def tela_inicial():
     pygame.quit()
     pygame.init()
@@ -590,7 +619,7 @@ def tela_login():
     largura = 500
     altura = 500
 
-    imagem_fundo = pygame.image.load("Img/img_painel_black.png")
+    imagem_fundo = pygame.image.load("Img/Img_painel_black.png")
     imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
     posicao_fundo = imagem_fundo.get_rect()
 
@@ -779,6 +808,7 @@ def tela_login():
     pygame.quit()
 
 def tela_cadastro():
+
     
     pygame.init()
 
@@ -1031,6 +1061,6 @@ def tela_cadastro():
         gerenciador_ui.draw_ui(tela)
 
         pygame.display.update()
-        
-# Chame a função para abrir a tela inicial
+
+#   Chame a função para abrir a tela inicial
 tela_inicial()
