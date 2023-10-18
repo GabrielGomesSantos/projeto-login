@@ -1,8 +1,3 @@
-# Trabalho feito por Fernanda ,Gabriel Gomes, Peter Willian, Yan Mancine
-# Intuito de criar um Painel de cadastro e logins de usuario simples mas que seja bonito e bem organizado 
-# Com a evolucao do projeto acabamos descidindo criar uma utilidade maior para o projeto implementando um aplicativo de notas 
-# Onde cada usuario teria suas notas separadas (nao conseguimos entregar tudo oq queriamos mas foi oq o tempo nos permitiu)
-
 import pygame
 import pygame_gui
 import sys
@@ -223,10 +218,13 @@ def pesquisar_tarefa(busca):
         edit_nota()
         return False
 
-def criar_tarefa(new_titulo, new_nota_edit):
+def criar_tarefa(new_titulo, nota_add): #Criar uma tarefa nova
+
     user_id = posicao_do_usuario_logado
     new_title = new_titulo
-    new_txt = new_nota_edit
+    new_txt = nota_add
+    titulos = []
+    flagtitulos = True
 
     try:
         with open("json/tarefas.json", 'r') as file:
@@ -234,12 +232,24 @@ def criar_tarefa(new_titulo, new_nota_edit):
     except FileNotFoundError:
         data = {"usuarios": []}
 
-    # Verifique se o usuário já possui uma tarefa com o mesmo título
-    for tarefa in data["usuarios"][user_id - 1]["tarefas"]:
-        if tarefa["titulo"] == new_title:
-            print("Título já existe, escolha outro.")
-            return
+    
+    #=-=-=-=-=-=-=Verificar-se-tem-titulos-iguais=-=-=-=-=-=-=-=-=
 
+    tarefas = verificar_tarefas()  
+
+    for tarefa in tarefas:
+        titulos.append(tarefa["titulo"])
+
+    for item in titulos:
+        if item == new_title:
+            flagtitulos = False
+
+    if flagtitulos:
+        print("continua...")
+    if  not flagtitulos:
+        print("Titulo ja existe!!!")
+
+        
     # Crie uma nova tarefa
     nova_tarefa = {
         "id": len(data["usuarios"][user_id - 1]["tarefas"]) + 1,  # Gere um novo ID
@@ -251,40 +261,15 @@ def criar_tarefa(new_titulo, new_nota_edit):
     # Adicione a nova tarefa à lista de tarefas do usuário
     data["usuarios"][user_id - 1]["tarefas"].append(nova_tarefa)
 
-    # Salve as alterações de volta no arquivo JSON
-    with open("json/tarefas.json", 'w', encoding='utf-8') as file:
-        json.dump(data, file, indent=4, ensure_ascii=False)
-    print("Tarefa criada com sucesso!")
-
-
-def editar_nota(new_nota_edit):
-    user_id = posicao_do_usuario_logado
-    new_txt = new_nota_edit
-    titulo_a_editar = titulo  # O título da nota a ser editada
-
-    try:
-        with open("json/tarefas.json", 'r') as file:
-            data = json.load(file)
-    except FileNotFoundError:
-        data = {"usuarios": []}
-
-    # Verifique se o usuário tem notas
-    if data["usuarios"][user_id - 1]["tarefas"]:
-        for tarefa in data["usuarios"][user_id - 1]["tarefas"]:
-            if tarefa["titulo"] == titulo_a_editar:
-                tarefa["descricao"] = new_txt  # Atualize a descrição da nota
-                break
-        else:
-            print("Nota não encontrada.")  # Nota com o título fornecido não foi encontrada
-    else:
-        print("Você não tem notas para editar.")  # O usuário não possui notas
 
     # Salve as alterações de volta no arquivo JSON
     with open("json/tarefas.json", 'w', encoding='utf-8') as file:
         json.dump(data, file, indent=4, ensure_ascii=False)
-    print("Nota editada com sucesso!")
+    
 
+    #Implementar 06: Rotulo para mostrar que a tarefa foi computada com sucesso!!!
 
+    
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-INTERFACE==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 def abrir_titulo():
@@ -328,7 +313,7 @@ def abrir_titulo():
                 if evento.key == pygame.K_RETURN:
                     titulo = texto_digitado  # Salva o texto digitado em titulo
                     texto_digitado = ""  # Limpa o texto digitado
-                    abrir_new_nota_edit(titulo)
+                    abrir_nota_add(titulo)
                 elif evento.key == pygame.K_BACKSPACE:
                     texto_digitado = texto_digitado[:-1]
                 else:
@@ -379,7 +364,7 @@ def abrir_titulo():
 
         pygame.display.flip()
 
-def abrir_new_nota_edit(titulo):
+def abrir_nota_add(titulo):
     new_titulo = titulo
     
     pygame.quit()
@@ -408,7 +393,7 @@ def abrir_new_nota_edit(titulo):
     largura_caixa_texto = 300
 
     texto_digitado = ""
-    new_nota_edit = ""  # Variável para armazenar o texto digitado
+    nota_add = ""  # Variável para armazenar o texto digitado
 
     # Texto no topo da tela
     texto_topo = "Digite a Nota:"
@@ -420,9 +405,9 @@ def abrir_new_nota_edit(titulo):
                 sys.exit()
             elif evento.type == pygame.KEYDOWN:
                 if evento.key == pygame.K_RETURN:
-                    new_nota_edit = texto_digitado  # Salva o texto digitado em new_nota_edit
+                    nota_add = texto_digitado  # Salva o texto digitado em nota_add
                     print("NOta??")
-                    criar_tarefa(new_titulo, new_nota_edit)
+                    criar_tarefa(new_titulo, nota_add)
                     
                     tela_main()
                 elif evento.key == pygame.K_BACKSPACE:
@@ -501,7 +486,7 @@ def edit_nota():
         largura_caixa_texto = 300
 
         texto_digitado = descricao
-        new_nota_edit = ""  # Variável para armazenar o texto digitado
+        nota_add = ""  # Variável para armazenar o texto digitado
 
         # Texto no topo da telaza
         texto_topo = (f"Titulo: {titulo}")
@@ -513,8 +498,8 @@ def edit_nota():
                     sys.exit()
                 elif evento.type == pygame.KEYDOWN:
                     if evento.key == pygame.K_RETURN:
-                        new_nota_edit = texto_digitado  # Salva o texto digitado em new_nota_edit
-                        editar_nota(new_nota_edit)
+                        nota_add = texto_digitado  # Salva o texto digitado em nota_add
+                        criar_tarefa(new_titulo, nota_add)
 
                         tela_main()
                     elif evento.key == pygame.K_BACKSPACE:

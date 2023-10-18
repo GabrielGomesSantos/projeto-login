@@ -2,15 +2,7 @@
     "dados": [
         {
             "username": "admin",
-            "pass": "admin"
-        },
-        {
-            "username": "gabriel",
-            "pass": "123123"
-        },
-        {
-            "username": "gab",
-            "pass": "gab"
+            "pass": "1"
         }
     ]
 }

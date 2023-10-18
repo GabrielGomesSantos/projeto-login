@@ -1,8 +1,3 @@
-# Trabalho feito por Fernanda ,Gabriel Gomes, Peter Willian, Yan Mancine
-# Intuito de criar um Painel de cadastro e logins de usuario simples mas que seja bonito e bem organizado 
-# Com a evolucao do projeto acabamos descidindo criar uma utilidade maior para o projeto implementando um aplicativo de notas 
-# Onde cada usuario teria suas notas separadas (nao conseguimos entregar tudo oq queriamos mas foi oq o tempo nos permitiu)
-
 import pygame
 import pygame_gui
 import sys
@@ -10,31 +5,26 @@ import json
 from time import sleep
 import os
 
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-Variaveis-Globais=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-JSON-CADASTRO=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 global posicao_do_usuario_logado
 global nome_usuario
-global titulo 
-global descricao
-titulo = None
-descricao = None
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-JSON-CADASTRO=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 def cadastro(nome, user, password):
     # Variáveis
-    dados2 = []
     cadastro_user = user
-    users = verificar_Usuario() 
+    users = verificar_Usuario()
     cadastroflag = True
-    
+
     for item in users:
         if item == cadastro_user:
             cadastroflag = False
             break
-        
+
     if cadastroflag:
         cadastro_password = password
-    
+
         novo_usuario = {
             "username": cadastro_user,
             "pass": cadastro_password
@@ -42,55 +32,52 @@ def cadastro(nome, user, password):
         dados1 = carregar_json()
 
         dados1["dados"].append(novo_usuario)
-        
+
         dados_json = {"dados": dados1["dados"]}
-            
+
         with open('json/cadastro.json', 'w') as cadastro:
             json.dump(dados_json, cadastro, indent=4)
-        
-        #=-=-=-=-=-=-=-=Criando uma aba de tarefas=-=-=-=-=-=-
+
+        # Criando uma aba de tarefas
         try:
             with open("json/tarefas.json", 'r') as file:
                 data = json.load(file)
         except FileNotFoundError:
             data = {"usuarios": []}
-            
-        user_id = user_id = len(data["usuarios"])+1 # Gere um novo ID
-        
-            
+
+        user_id = len(data["usuarios"]) + 1  # Gere um novo ID
+
         carregar_Tarefas_json()
-        
-        nova_tarefa = {"id": user_id,
+
+        nova_tarefa = {
+            "id": user_id,
             "nome": nome,
             "user": user,
-            "tarefas":[
+            "tarefas": [
                 {
                     "id": 1,
                     "titulo": "Nota exemplo",
-                    "descricao": "Um exemplo de uma nota que voce pode escrever", 
-                    "concluida": False
+                    "descricao": "Um exemplo de uma nota que você pode escrever",
+                    "concluída": False
                 }
             ]
         }
-        
-        data["usuarios"].append(nova_tarefa)
 
+        data["usuarios"].append(nova_tarefa)
 
         # Salve as alterações de volta no arquivo JSON
         with open("json/tarefas.json", 'w', encoding='utf-8') as file:
             json.dump(data, file, indent=4, ensure_ascii=False)
 
-        #Print de confirmacao de dados
+        # Print de confirmação de dados
         print(f"Nome: {nome}")
         print(f"User: {user}")
         print(f"Password: {password}")
-        print(f"Usuário {cadastro_user} cadastrado com sucesso!!") #Implementar 03: Rotulo para mostrar que o usuario foi cadastrado com sucesso !!!
-        return(False) 
-        
-
+        print(f"Usuário {cadastro_user} cadastrado com sucesso!!")
     else:
-        print("Usuário já cadastrado") #Implementar 04: Rotulo para mostrar que o usuario ja foi cadastrado!!!
-        return(True)
+        print("Usuário já cadastrado")
+
+
     #=-=-=PARTE DE VERIFICACAO DE LOGIN=-=-=
     
 def carregar_json():
@@ -149,19 +136,19 @@ def verificar_login(User, Pass ):
     if usuario:
         if pas[pos] == pass_digitado:
             senha = True
-            
+        
         else:
             senha = False   
     
     if usuario and senha:
         print(f"Bem Vindo {item}!!!") 
         tela_main()
-        return False
           
     else:
         print("Usuario ou senha invalidos!!") #Implementar 05: Rotulo para mostrar que o usuario ou senha estao errados!!!
-        return (True)
-#=-=-=-=-=-JSON-TAREFAS=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+        tela_login()
+       
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-JSON-TAREFAS=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 def carregar_Tarefas_json():#  Carrega o nosso documento "json/tarefas.json" e salvo seus dados em uma variavels usuarios.
     with open("json/tarefas.json", 'r', encoding='utf-8') as usuario:
@@ -174,8 +161,7 @@ def verificar_tarefas(): #  Verifica as tarefas do usuario
     
     global posicao_do_usuario_logado # Adicione essa linha
     global nome_usuario
-    tarefas = ""
-
+    
     dados = carregar_Tarefas_json()
 
     for item in dados:
@@ -184,7 +170,7 @@ def verificar_tarefas(): #  Verifica as tarefas do usuario
             
             break
     return(tarefas)   
-        
+
 def dividir_verificar_tarefas():
     task = []
     titles = []
@@ -199,34 +185,31 @@ def mostrar_verificar_tarefas():
         print(f"---------------------------\nTitulo: {item['titulo']}\n\nDescrição: {item['descricao']}")   
 
 def pesquisar_tarefa(busca):
-    print("oi")
+    found = False
     tarefas_list = verificar_tarefas()
-    global titulo
-    global descricao
-    titulo = None
-    descricao = None
-    write_title = busca
-    found = False  # Defina found como False no início da função
 
+    write_title = busca
+    
     for tarefa in tarefas_list:
         if tarefa['titulo'] == write_title:
-            print(f"\nTarefa encontrada")
+            sleep(0.5)
+            print(f"\nTarefa encontrada") #Implementar 02: Rotulo para mostrar que a tarefa foi encontrada !!!
             print(f"---------------------------\nTitulo: {tarefa['titulo']}\n\nDescrição: {tarefa['descricao']}")
-            titulo = tarefa['titulo']
-            descricao = tarefa['descricao']
             found = True  # Marque como encontrada
+            break
 
     if not found:
-        print("Nenhuma tarefa correspondente encontrada.")
-        return True
-    else:
-        edit_nota()
-        return False
 
-def criar_tarefa(new_titulo, new_nota_edit):
+        #Implementar 01: Rotulo para mostrar que a tarefa nao foi encontrada !!!
+        print("Não foi possível encontrar a tarefa com esse nome")
+  
+def criar_tarefa(new_titulo, nota_add): #Criar uma tarefa nova
+
     user_id = posicao_do_usuario_logado
     new_title = new_titulo
-    new_txt = new_nota_edit
+    new_txt = nota_add
+    titulos = []
+    flagtitulos = True
 
     try:
         with open("json/tarefas.json", 'r') as file:
@@ -234,12 +217,24 @@ def criar_tarefa(new_titulo, new_nota_edit):
     except FileNotFoundError:
         data = {"usuarios": []}
 
-    # Verifique se o usuário já possui uma tarefa com o mesmo título
-    for tarefa in data["usuarios"][user_id - 1]["tarefas"]:
-        if tarefa["titulo"] == new_title:
-            print("Título já existe, escolha outro.")
-            return
+    
+    #=-=-=-=-=-=-=Verificar-se-tem-titulos-iguais=-=-=-=-=-=-=-=-=
 
+    tarefas = verificar_tarefas()  
+
+    for tarefa in tarefas:
+        titulos.append(tarefa["titulo"])
+
+    for item in titulos:
+        if item == new_title:
+            flagtitulos = False
+
+    if flagtitulos:
+        print("continua...")
+    if  not flagtitulos:
+        print("Titulo ja existe!!!")
+
+        
     # Crie uma nova tarefa
     nova_tarefa = {
         "id": len(data["usuarios"][user_id - 1]["tarefas"]) + 1,  # Gere um novo ID
@@ -251,40 +246,13 @@ def criar_tarefa(new_titulo, new_nota_edit):
     # Adicione a nova tarefa à lista de tarefas do usuário
     data["usuarios"][user_id - 1]["tarefas"].append(nova_tarefa)
 
-    # Salve as alterações de volta no arquivo JSON
-    with open("json/tarefas.json", 'w', encoding='utf-8') as file:
-        json.dump(data, file, indent=4, ensure_ascii=False)
-    print("Tarefa criada com sucesso!")
-
-
-def editar_nota(new_nota_edit):
-    user_id = posicao_do_usuario_logado
-    new_txt = new_nota_edit
-    titulo_a_editar = titulo  # O título da nota a ser editada
-
-    try:
-        with open("json/tarefas.json", 'r') as file:
-            data = json.load(file)
-    except FileNotFoundError:
-        data = {"usuarios": []}
-
-    # Verifique se o usuário tem notas
-    if data["usuarios"][user_id - 1]["tarefas"]:
-        for tarefa in data["usuarios"][user_id - 1]["tarefas"]:
-            if tarefa["titulo"] == titulo_a_editar:
-                tarefa["descricao"] = new_txt  # Atualize a descrição da nota
-                break
-        else:
-            print("Nota não encontrada.")  # Nota com o título fornecido não foi encontrada
-    else:
-        print("Você não tem notas para editar.")  # O usuário não possui notas
 
     # Salve as alterações de volta no arquivo JSON
     with open("json/tarefas.json", 'w', encoding='utf-8') as file:
         json.dump(data, file, indent=4, ensure_ascii=False)
-    print("Nota editada com sucesso!")
+    
 
-
+    #Implementar 06: Rotulo para mostrar que a tarefa foi computada com sucesso!!!
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-INTERFACE==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 def abrir_titulo():
@@ -328,7 +296,7 @@ def abrir_titulo():
                 if evento.key == pygame.K_RETURN:
                     titulo = texto_digitado  # Salva o texto digitado em titulo
                     texto_digitado = ""  # Limpa o texto digitado
-                    abrir_new_nota_edit(titulo)
+                    abrir_nota_add(titulo)
                 elif evento.key == pygame.K_BACKSPACE:
                     texto_digitado = texto_digitado[:-1]
                 else:
@@ -379,7 +347,7 @@ def abrir_titulo():
 
         pygame.display.flip()
 
-def abrir_new_nota_edit(titulo):
+def abrir_nota_add(titulo):
     new_titulo = titulo
     
     pygame.quit()
@@ -408,7 +376,7 @@ def abrir_new_nota_edit(titulo):
     largura_caixa_texto = 300
 
     texto_digitado = ""
-    new_nota_edit = ""  # Variável para armazenar o texto digitado
+    nota_add = ""  # Variável para armazenar o texto digitado
 
     # Texto no topo da tela
     texto_topo = "Digite a Nota:"
@@ -420,9 +388,8 @@ def abrir_new_nota_edit(titulo):
                 sys.exit()
             elif evento.type == pygame.KEYDOWN:
                 if evento.key == pygame.K_RETURN:
-                    new_nota_edit = texto_digitado  # Salva o texto digitado em new_nota_edit
-                    print("NOta??")
-                    criar_tarefa(new_titulo, new_nota_edit)
+                    nota_add = texto_digitado  # Salva o texto digitado em nota_add
+                    criar_tarefa(new_titulo, nota_add)
                     
                     tela_main()
                 elif evento.key == pygame.K_BACKSPACE:
@@ -472,98 +439,6 @@ def abrir_new_nota_edit(titulo):
             y += altura_texto
         pygame.display.update()
     
-def edit_nota():
-        new_titulo = titulo
-    
-        pygame.quit()
-        pygame.init()
-
-        # Configurações da tela
-        largura = 500
-        altura = 500
-
-        imagem_fundo = pygame.image.load("Img/Img_painel_black.png")
-        imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
-        posicao_fundo = imagem_fundo.get_rect()
-
-        tela = pygame.display.set_mode((largura, altura))
-        pygame.display.set_caption("Edite a nota")
-
-        # Cores
-        branco = (255, 255, 255)
-        preto = (0, 0, 0)
-
-        # Fonte e tamanho
-        fonte = pygame.font.Font(None, 24)
-        fonte2 = pygame.font.Font('Fonts/arial.TTF', 36)
-
-        # Largura máxima da caixa de texto
-        largura_caixa_texto = 300
-
-        texto_digitado = descricao
-        new_nota_edit = ""  # Variável para armazenar o texto digitado
-
-        # Texto no topo da telaza
-        texto_topo = (f"Titulo: {titulo}")
-
-        while True:
-            for evento in pygame.event.get():
-                if evento.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                elif evento.type == pygame.KEYDOWN:
-                    if evento.key == pygame.K_RETURN:
-                        new_nota_edit = texto_digitado  # Salva o texto digitado em new_nota_edit
-                        editar_nota(new_nota_edit)
-
-                        tela_main()
-                    elif evento.key == pygame.K_BACKSPACE:
-                        texto_digitado = texto_digitado[:-1]
-                    else:
-                        texto_digitado += evento.unicode
-
-            tela.blit(imagem_fundo, posicao_fundo)  # Desenha o fundo
-
-            # Desenha o texto no topo da tela
-            texto_topo_renderizado = fonte2.render(texto_topo, True, branco)
-            tela.blit(texto_topo_renderizado, ((largura - fonte2.size(texto_topo)[0]) // 2, 85))
-
-            # Quebra o texto em linhas com base na largura máxima
-            linhas = []
-            linha_atual = ""
-            for palavra in texto_digitado.split():
-                teste = linha_atual + " " + palavra if linha_atual else palavra
-                largura_texto, _ = fonte.size(teste)
-                if largura_texto <= largura_caixa_texto:
-                    linha_atual = teste
-                else:
-                    linhas.append(linha_atual)
-                    linha_atual = palavra
-            if linha_atual:
-                linhas.append(linha_atual)
-
-            # Calcula a altura total do texto
-            altura_texto_total = sum(fonte.size(linha)[1] for linha in linhas)
-
-            # Calcula a posição vertical para centralizar o texto na tela
-            y = (altura - altura_texto_total) // 2
-
-            # Define as dimensões da caixa de texto
-            caixa_x = (largura - largura_caixa_texto) // 2
-            caixa_y = y
-            caixa_largura = largura_caixa_texto
-            caixa_altura = altura_texto_total
-
-            # Desenha a borda da caixa de texto
-            pygame.draw.rect(tela, preto, (caixa_x, caixa_y, caixa_largura, caixa_altura), 2)  # Largura 2 para a borda
-
-            for linha in linhas:
-                texto_renderizado = fonte.render(linha, True, branco)
-                largura_texto, altura_texto = fonte.size(linha)
-                tela.blit(texto_renderizado, ((largura - largura_texto) // 2, y))
-                y += altura_texto
-            pygame.display.update()
-
 def abrir_tela_e_fechar():
     pygame.quit()  # Fecha a tela atual
     tela_inicial()  # Abre a tela inicial
@@ -573,12 +448,11 @@ def desenhar_botao(tela, texto, cor, retangulo, cor_clique, clicado):
     tela.blit(texto, (retangulo.centerx - texto.get_width() // 2, retangulo.centery - texto.get_height() // 2))
 
 def tela_main():
-   
     pygame.quit()
     pygame.init()
     largura = 1920
     altura = 1000
-    verificar_busca = False 
+
     imagem_fundo = pygame.image.load("Img/mainbg.png")
     imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
     posicao_fundo = imagem_fundo.get_rect()
@@ -604,21 +478,21 @@ def tela_main():
 
     fonte1 = pygame.font.Font(None, 200)
     fonte = pygame.font.Font(None, 36)
-    texto_botao_add = fonte1.render("+", True, (0, 0, 0)) # Texto preto
-    fonte2 = pygame.font.Font(None, 34)
+    texto_botao_add = fonte1.render("+", True, (0, 0, 0))  # Texto preto
 
     # Modifique a cor do texto do botão "Sair" para branco
-    texto_nome = fonte2.render((f"Bem-Vindo \n    {nome_usuario}"), True, (255, 255, 255))# Texto branco
+    texto_botao_sair = fonte.render("X", True, (255, 255, 255))  # Texto branco
 
     botao_add_clicado = False
     botao_sair_clicado = False
-
+    
     # Barra de pesquisa
-    largura_barra_pesquisa = 600
-    altura_barra_pesquisa = 70  # Aumentando a altura da caixa de pesquisa
-    posicao_barra_pesquisa = pygame.Rect((largura // 2 - largura_barra_pesquisa // 2, 28, largura_barra_pesquisa, altura_barra_pesquisa))
+    largura_barra_pesquisa = 400
+    altura_barra_pesquisa = 30
+    posicao_barra_pesquisa = pygame.Rect((largura // 2 - largura_barra_pesquisa // 2, 50, largura_barra_pesquisa, altura_barra_pesquisa))
     fonte_barra_pesquisa = pygame.font.Font(None, 36)
     busca = ""  # Variável para armazenar o texto da pesquisa
+
 
     while executando_tela:
         for evento in pygame.event.get():
@@ -632,7 +506,6 @@ def tela_main():
                     botao_sair_clicado = True
                 elif posicao_barra_pesquisa.collidepoint(evento.pos):
                     barra_pesquisa_ativa = True
-                    verificar_busca = False  # Redefina a verificação para False
                 else:
                     barra_pesquisa_ativa = False
             elif evento.type == pygame.MOUSEBUTTONUP and evento.button == 1:
@@ -646,38 +519,26 @@ def tela_main():
                 botao_sair_clicado = False
             elif evento.type == pygame.KEYDOWN:
                 if barra_pesquisa_ativa:
-                    if evento.key == pygame.K_RETURN and busca != "":
-                        verificar_busca = pesquisar_tarefa(busca)
+                    if evento.key == pygame.K_RETURN and busca != "":  # Quando Enter é pressionado na barra de pesquisa
                         print(f"Texto da pesquisa: {busca}")
-                        busca = ""  # Limpe a barra de pesquisa
-                    elif evento.key == pygame.K_BACKSPACE:
+                        pesquisar_tarefa(busca)
+                    elif evento.key == pygame.K_BACKSPACE:  # Backspace para apagar um caractere
                         busca = busca[:-1]
                     else:
                         busca += evento.unicode
 
+
         tela.blit(imagem_fundo, posicao_fundo)
 
         desenhar_botao(tela, texto_botao_add, (255, 255, 255, 128), posicao_botao_add, cor_botao_clique, botao_add_clicado)
-        
+        desenhar_botao(tela, texto_botao_sair, (255, 0, 0), posicao_botao_sair, cor_botao_clique, botao_sair_clicado)  # Alterando a cor do botão
 
-        # Desenhe a caixa de pesquisa com cantos arredondados
-        pygame.draw.rect(tela, (0, 0, 0), posicao_barra_pesquisa, 2, border_radius=50)  # Caixa de pesquisa com cantos arredondados
-        texto_barra_pesquisa = fonte_barra_pesquisa.render(busca, True, (255,255,255))
-        # Centralize verticalmente o texto na caixa de pesquisa
-        pos_texto_barra_pesquisa = texto_barra_pesquisa.get_rect(center=posicao_barra_pesquisa.center)
-        tela.blit(texto_barra_pesquisa, pos_texto_barra_pesquisa)
-        tela.blit(texto_nome, (1670, 40))
-        busca_not_font = pygame.font.Font("Fonts/arial.TTF", 26)
-        busca_not_found = busca_not_font.render("Nota não encontrada!", True, (235, 64, 52))
-        if verificar_busca:
-            x = 840 # Defina a coordenada x desejada
-            y = 110 # Defina a coordenada y desejada
-            tela.blit(busca_not_found, (x, y))
-
-        # posicao (barra_de_pesquisa.x,barra_de_pesquisa.y - 30 )
-        
+        pygame.draw.rect(tela, (255, 255, 255), posicao_barra_pesquisa, 2)  # Caixa de pesquisa
+        texto_barra_pesquisa = fonte_barra_pesquisa.render(busca, True, (0, 0, 0))
+        tela.blit(texto_barra_pesquisa, (posicao_barra_pesquisa.x + 5, posicao_barra_pesquisa.y + 5))
         pygame.display.update()
 
+        tela.blit(imagem_fundo, posicao_fundo)
     pygame.quit()
     
 def tela_inicial():
@@ -696,8 +557,8 @@ def tela_inicial():
     executando_tela = True
 
     # Defina as cores dos botões
-    cor_botao = (154, 111, 79)
-    cor_botao_clique = (172, 122, 87)
+    cor_botao = (154,111,79) 
+    cor_botao_clique = (172,122,87) 
 
     # Defina as dimensões e a posição do botão "Login"
     largura_botao = 200
@@ -714,11 +575,6 @@ def tela_inicial():
 
     botao_login_clicado = False
     botao_signin_clicado = False
-
-    # Carregue a imagem de 150x150
-    imagem_centro = pygame.image.load("Img/logopng.png")
-    imagem_centro = pygame.transform.scale(imagem_centro, (170, 170))
-    posicao_imagem_centro = imagem_centro.get_rect(center=(largura // 2, altura // 2.7))
 
     while executando_tela:
         for evento in pygame.event.get():
@@ -748,9 +604,6 @@ def tela_inicial():
         pygame.draw.rect(tela, cor_botao if not botao_signin_clicado else cor_botao_clique, posicao_botao_signin, 0, 100)
         tela.blit(texto_botao_signin, (largura // 2 - texto_botao_signin.get_width() // 2, 350 + altura_botao // 2 - texto_botao_signin.get_height() // 2))
 
-        # Desenhe a imagem no centro da tela
-        tela.blit(imagem_centro, posicao_imagem_centro)
-
         pygame.display.update()
 
     pygame.quit()
@@ -759,8 +612,7 @@ def tela_login():
 
     #imagem mostrar senha
     imagem_mostrar_senha = pygame.image.load("Img/senha_on.png")
-    verificar_dados = False 
-
+    
     pygame.quit()
     pygame.init()
     largura = 500
@@ -839,8 +691,7 @@ def tela_login():
 
                 elif posicao_botao_entrar.collidepoint(evento.pos):
                     botao_entrar_clicado = True
-                    verificar_dados = verificar_login(User, Pass)
-                    
+                
                 else:
                     ativo_input1 = False
                     ativo_input2 = False
@@ -862,8 +713,6 @@ def tela_login():
                         print("Texto da Caixa 1:", User)
                         ativo_input2 = not ativo_input2
                         ativo_input1 = False
-                        cor_input1 = cor_input_inativo
-                        cor_input2 = cor_input_ativo
                         
                         # Limpe a entrada de texto
                     elif evento.key == pygame.K_BACKSPACE:
@@ -878,8 +727,7 @@ def tela_login():
                         verificar_login(User, Pass)
                         Pass = ""
                         User = ""
-                        verificar_dados = verificar_login(User, Pass)
-                        
+
                     elif evento.key == pygame.K_BACKSPACE:
                         Pass = Pass[:-1]
                     elif len(Pass) < maximo_senha:
@@ -903,10 +751,6 @@ def tela_login():
         pygame.draw.rect(tela, (255, 255, 255), input_caixa2, 0, 100)# fundo da caixa 2
         pygame.draw.rect(tela, cor_input2, input_caixa2,2, 100)
         pygame.draw.rect(tela, cor_botao if not mostrar_senha_ativo else cor_botao_clique, mostrar_senha, 0, 100)
-        dados_incorretos_font =  pygame.font.Font("Fonts/arial.TTF", 15)
-        dados_incorretos = dados_incorretos_font.render("Senha ou Usuario incorretos!", True, (235, 64, 52))
-        if verificar_dados:
-            tela.blit(dados_incorretos, (posicao_botao_entrar.x, posicao_botao_entrar.y-30))
 
         #Faz a senha ficar em mascara "•"
         if not mostrar_senha_ativo:
@@ -966,7 +810,7 @@ def tela_cadastro():
 
     
     pygame.init()
-    gerenciar_dados = False
+
     largura = 500
     altura = 500
 
@@ -1097,7 +941,6 @@ def tela_cadastro():
                     confirme = entrada_confirme
                     if (password == confirme and entrada_nome != "Nome:" and entrada_user != "User:"):
                         cadastro(nome, user, password)
-                        gerenciar_dados = cadastro(nome, user, password) 
                     else:
                         print("Verifique a confirmação! ")
                 else:
@@ -1142,12 +985,7 @@ def tela_cadastro():
                         entrada_confirme += evento.unicode
 
         tela.blit(imagem_fundo, posicao_fundo)
-        
-        dados_incorretos_font =  pygame.font.Font("Fonts/arial.TTF", 15)
-        dados_incorretos = dados_incorretos_font.render("Usuario já cadastrado", True, (235, 64, 52))
-        if gerenciar_dados:
-            tela.blit(dados_incorretos, (posicao_botao_cadastrar.x+ 25, posicao_botao_cadastrar.y-30))
-        
+
         fonte = pygame.font.Font("Fonts/arial.TTF", 20)
         pygame.draw.rect(tela,(255,255,255) , posicao_caixa_texto_user, 0, 11)
         pygame.draw.rect(tela, cor_borda_ativa if editando_caixa_texto_user else cor_botao, posicao_caixa_texto_user, 2, 11)
